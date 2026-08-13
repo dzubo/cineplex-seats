@@ -1,0 +1,9 @@
+[project]
+name = "cineplex-seats"
+version = "0.1.0"
+description = "Tools for checking IMAX seat availability at Cineplex theatres"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+package = false
