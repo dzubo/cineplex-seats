@@ -9,7 +9,7 @@ without digging IDs out of the Cineplex website's network requests.
 Default date is the first bookable date at that theatre.
 """
 import sys
-import re
+import datetime
 
 from urllib.error import HTTPError, URLError
 
@@ -64,8 +64,12 @@ def main():
             if not dates:
                 sys.exit(f"error: no bookable dates for theatre {location_id}")
             date = dates[0][:10]
-        elif not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
-            sys.exit(f"error: --date must be YYYY-MM-DD, got {date!r}")
+        else:
+            try:
+                datetime.date.fromisoformat(date)
+            except ValueError:
+                sys.exit(f"error: --date must be a valid YYYY-MM-DD date, "
+                         f"got {date!r}")
 
         films = fetch_films(location_id, date)
     except (HTTPError, URLError) as e:
