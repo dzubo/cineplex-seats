@@ -76,6 +76,23 @@ def get_dates(location_id, film_id=None):
     return _get_json(THEATRICAL_BASE, "/v1/dates/bookable", params)
 
 
+def get_theatres():
+    """Return list of theatre dicts (id, name, city, province) for all
+    Cineplex theatres."""
+    data = _get_json(THEATRICAL_BASE, "/v1/theatres")
+    out = []
+    for group in ("favouriteTheatres", "nearbyTheatres", "otherTheatres"):
+        for t in data.get(group) or []:
+            loc = t.get("location") or {}
+            out.append({
+                "id": t["theatreId"],
+                "name": t.get("theatreName", ""),
+                "city": loc.get("city") or "",
+                "province": loc.get("provinceCode") or "",
+            })
+    return out
+
+
 def get_showtimes(location_id, date, film_id=None):
     """Return raw showtimes response for one date."""
     params = {"LocationId": str(location_id), "Date": date}
